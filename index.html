@@ -1,0 +1,1137 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Document Manifest</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Spectral:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #efe9d8;
+    --paper-raised: #f8f3e5;
+    --paper-shadow: #dcd3b4;
+    --ink: #241f1a;
+    --ink-soft: #6b6153;
+    --stamp-red: #8b2a22;
+    --stamp-navy: #22405c;
+    --stamp-green: #3b5d42;
+    --line: #c9bfa0;
+    --danger: #8b2a22;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+
+  body {
+    background: var(--paper);
+    background-image: radial-gradient(circle at 20% 15%, rgba(0,0,0,0.025), transparent 40%), radial-gradient(circle at 85% 80%, rgba(0,0,0,0.03), transparent 45%);
+    color: var(--ink);
+    font-family: 'IBM Plex Mono', monospace;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding: 0 0 64px;
+  }
+
+  .sheet {
+    width: 100%;
+    max-width: 820px;
+    padding: 0 20px;
+  }
+
+  header {
+    position: relative;
+    padding: 48px 0 28px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 28px;
+  }
+
+  .stamp {
+    position: absolute;
+    top: 38px;
+    right: 8px;
+    width: 132px;
+    padding: 10px 8px;
+    text-align: center;
+    border: 2px solid var(--stamp-red);
+    color: var(--stamp-red);
+    border-radius: 4px;
+    transform: rotate(-9deg) scale(1);
+    font-family: 'Special Elite', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.06em;
+    line-height: 1.5;
+    opacity: 0.9;
+    animation: stamp-in 0.6s cubic-bezier(.2,1.4,.4,1) 0.15s both;
+  }
+
+  .stamp::before,
+  .stamp::after {
+    content: "";
+    position: absolute;
+    inset: 3px;
+    border: 1px solid var(--stamp-red);
+    border-radius: 2px;
+    opacity: 0.6;
+  }
+
+  .stamp b { display: block; font-size: 12.5px; }
+
+  @keyframes stamp-in {
+    0% { opacity: 0; transform: rotate(-9deg) scale(2.6); }
+    70% { opacity: 0.95; transform: rotate(-9deg) scale(0.94); }
+    100% { opacity: 0.9; transform: rotate(-9deg) scale(1); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .stamp { animation: none; }
+  }
+
+  .eyebrow {
+    font-family: 'Special Elite', monospace;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin: 0 0 10px;
+  }
+
+  h1 {
+    font-family: 'Spectral', serif;
+    font-weight: 700;
+    font-size: clamp(26px, 5.6vw, 38px);
+    line-height: 1.14;
+    margin: 0 0 12px;
+    max-width: 520px;
+  }
+
+  .sub {
+    font-size: 13px;
+    color: var(--ink-soft);
+    line-height: 1.6;
+    max-width: 460px;
+    margin: 0;
+  }
+
+  .mode-link {
+    display: inline-block;
+    margin-top: 16px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    text-decoration: none;
+    border-bottom: 1px dashed var(--line);
+    padding-bottom: 2px;
+  }
+
+  .mode-link:hover { color: var(--ink); }
+
+  .controls {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 26px;
+  }
+
+  #search {
+    width: 100%;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 14px;
+    padding: 12px 14px;
+    background: var(--paper-raised);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    color: var(--ink);
+  }
+
+  #search:focus {
+    outline: 2px solid var(--stamp-navy);
+    outline-offset: 1px;
+  }
+
+  #search::placeholder { color: #9c9280; }
+
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .chip {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    padding: 7px 12px;
+    border: 1px solid var(--line);
+    background: transparent;
+    color: var(--ink-soft);
+    border-radius: 100px;
+    cursor: pointer;
+  }
+
+  .chip:focus-visible { outline: 2px solid var(--stamp-navy); outline-offset: 2px; }
+  .chip.active {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--paper-raised);
+  }
+
+  #list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  @media (min-width: 680px) {
+    #list { grid-template-columns: 1fr 1fr; }
+  }
+
+  .card {
+    position: relative;
+    background: var(--paper-raised);
+    border: 1px solid var(--line);
+    border-left: 5px solid var(--tab-color, var(--stamp-navy));
+    border-radius: 3px;
+    padding: 16px 16px 14px;
+    box-shadow: 0 1px 0 var(--paper-shadow);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--tab-color, var(--stamp-navy));
+  }
+
+  .filetype {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.04em;
+    color: var(--ink-soft);
+    border: 1px solid var(--line);
+    padding: 2px 6px;
+    border-radius: 2px;
+  }
+
+  .card h3 {
+    font-family: 'Spectral', serif;
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 1.3;
+    margin: 0;
+  }
+
+  .card p {
+    font-size: 12.5px;
+    color: var(--ink-soft);
+    line-height: 1.55;
+    margin: 0;
+  }
+
+  .meta {
+    font-size: 11px;
+    color: var(--ink-soft);
+    letter-spacing: 0.02em;
+    margin-top: 2px;
+  }
+
+  .card-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  .open-btn, .edit-btn, .del-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    border: none;
+    padding: 10px 14px;
+    border-radius: 2px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: transform 0.08s ease;
+  }
+
+  .open-btn {
+    color: var(--paper-raised);
+    background: var(--ink);
+  }
+
+  .edit-btn {
+    color: var(--ink);
+    background: transparent;
+    border: 1px solid var(--line);
+  }
+
+  .del-btn {
+    color: var(--danger);
+    background: transparent;
+    border: 1px solid var(--danger);
+  }
+
+  .open-btn:hover, .edit-btn:hover, .del-btn:hover { transform: translateY(1px); }
+  .open-btn:focus-visible, .edit-btn:focus-visible, .del-btn:focus-visible { outline: 2px solid var(--stamp-navy); outline-offset: 2px; }
+  .open-btn svg { width: 12px; height: 12px; flex-shrink: 0; }
+
+  .empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--ink-soft);
+    font-size: 13px;
+    border: 1px dashed var(--line);
+    border-radius: 4px;
+  }
+
+  .gate {
+    max-width: 360px;
+    background: var(--paper-raised);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 20px;
+  }
+
+  .gate label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ink-soft);
+  }
+
+  .gate input {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 14px;
+    padding: 10px 12px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    color: var(--ink);
+  }
+
+  .gate-error {
+    font-size: 12px;
+    color: var(--danger);
+    min-height: 16px;
+  }
+
+  .admin-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    margin-top: 24px;
+  }
+
+  .form-card {
+    background: var(--paper-raised);
+    border: 1px solid var(--line);
+    border-left: 5px solid var(--stamp-navy);
+    border-radius: 3px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .form-card h2 {
+    font-family: 'Spectral', serif;
+    font-size: 18px;
+    margin: 0;
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .field label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--ink-soft);
+  }
+
+  .field input[type=text], .field textarea {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    padding: 10px 12px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    color: var(--ink);
+    resize: vertical;
+  }
+
+  .field textarea { min-height: 64px; }
+
+  .source-toggle {
+    display: flex;
+    gap: 8px;
+  }
+
+  .source-toggle button {
+    flex: 1;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 9px 10px;
+    border: 1px solid var(--line);
+    background: transparent;
+    color: var(--ink-soft);
+    border-radius: 2px;
+    cursor: pointer;
+  }
+
+  .source-toggle button.active {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--paper-raised);
+  }
+
+  .dropzone {
+    border: 1px dashed var(--line);
+    border-radius: 3px;
+    padding: 18px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--ink-soft);
+    cursor: pointer;
+    background: var(--paper);
+  }
+
+  .dropzone.drag { border-color: var(--stamp-navy); color: var(--ink); }
+  .dropzone input { display: none; }
+  .file-picked { font-size: 12px; color: var(--ink); margin-top: 4px; }
+
+  .form-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 4px;
+  }
+
+  .btn-primary, .btn-ghost {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding: 11px 16px;
+    border-radius: 2px;
+    cursor: pointer;
+  }
+
+  .btn-primary {
+    background: var(--ink);
+    color: var(--paper-raised);
+    border: none;
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--ink-soft);
+    border: 1px solid var(--line);
+  }
+
+  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .admin-list h2 {
+    font-family: 'Spectral', serif;
+    font-size: 18px;
+    margin: 0 0 12px;
+  }
+
+  .help-note {
+    font-size: 11.5px;
+    color: var(--ink-soft);
+    line-height: 1.6;
+    border-top: 1px dashed var(--line);
+    padding-top: 12px;
+    margin-top: 4px;
+  }
+
+  .manifest-id {
+    display: inline-flex;
+    align-items: center;
+    color: rgba(18, 25, 22, 0.52);
+    text-decoration: none;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    opacity: 0.55;
+    transition: opacity 0.18s ease, color 0.18s ease;
+  }
+
+  .manifest-id:hover, .manifest-id:focus-visible {
+    opacity: 1;
+    color: var(--ink);
+    outline: none;
+  }
+
+  footer {
+    margin-top: 34px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-family: 'Special Elite', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.04em;
+    color: var(--ink-soft);
+  }
+
+  #toast {
+    position: fixed;
+    left: 50%;
+    bottom: 22px;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--ink);
+    color: var(--paper-raised);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    padding: 12px 18px;
+    border-radius: 3px;
+    max-width: 88vw;
+    text-align: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    z-index: 10;
+  }
+
+  #toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .spin {
+    display: inline-block;
+    width: 11px;
+    height: 11px;
+    border: 2px solid rgba(255,255,255,0.35);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    margin-right: 6px;
+    vertical-align: -1px;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<div class="sheet">
+  <header>
+    <div class="stamp" id="stamp"><b id="stamp-label">ACCESSED</b><span id="stamp-date"></span></div>
+    <p class="eyebrow" id="eyebrow">Document Manifest</p>
+    <h1 id="heading">Everything you need, in one clear source.</h1>
+    <p class="sub" id="subhead">Select any file below to open it. This page updates whenever the manifest changes — no need to rescan.</p>
+  </header>
+
+  <div id="public-view">
+    <div class="controls">
+      <input type="text" id="search" placeholder="Search documents…" aria-label="Search documents">
+      <div class="chips" id="chips"></div>
+    </div>
+    <div id="list"></div>
+  </div>
+
+  <div id="admin-gate" class="gate" style="display:none;">
+    <label for="passcode">Admin passcode</label>
+    <input type="password" id="passcode" placeholder="Enter passcode">
+    <div class="gate-error" id="gate-error"></div>
+    <button class="btn-primary" id="gate-submit">Unlock</button>
+  </div>
+
+  <div id="admin-panel" class="admin-panel" style="display:none;">
+    <div class="form-card">
+      <h2 id="form-title">Add a document</h2>
+
+      <div class="field">
+        <label for="f-title">Title</label>
+        <input type="text" id="f-title" placeholder="e.g. Product Manual">
+      </div>
+
+      <div class="field">
+        <label for="f-desc">Description</label>
+        <textarea id="f-desc" placeholder="One or two lines describing what this document covers"></textarea>
+      </div>
+
+      <div class="field">
+        <label for="f-cat">Category</label>
+        <input type="text" id="f-cat" list="cat-options" placeholder="e.g. Guide, Policy, Form">
+        <datalist id="cat-options"></datalist>
+      </div>
+
+      <div class="field">
+        <label>Source</label>
+        <div class="source-toggle">
+          <button type="button" id="src-upload">Upload PDF</button>
+          <button type="button" id="src-link" class="active">Link to PDF</button>
+        </div>
+      </div>
+
+      <div class="field" id="upload-field" style="display:none;">
+        <div class="dropzone" id="dropzone">
+          Tap to choose a PDF, or drag one here<br>(small demo files only)
+          <input type="file" id="f-file" accept="application/pdf">
+        </div>
+        <div class="file-picked" id="file-picked"></div>
+      </div>
+
+      <div class="field" id="link-field">
+        <label for="f-url">PDF URL</label>
+        <input type="text" id="f-url" placeholder="https://… or ./docs/file.pdf">
+      </div>
+
+      <div class="form-actions">
+        <button class="btn-primary" id="save-doc">Save document</button>
+        <button class="btn-ghost" id="cancel-edit" style="display:none;">Cancel edit</button>
+      </div>
+      <div class="help-note">For GitHub Pages or static hosting, use a public PDF URL or a repository file path. Browser uploads are only for small demo files.</div>
+    </div>
+
+    <div class="admin-list">
+      <h2>Existing documents</h2>
+      <div id="admin-list-body"></div>
+    </div>
+  </div>
+
+  <footer>
+    <a href="#" id="manifest-id" class="manifest-id" aria-label="Open admin dashboard" title="Admin dashboard"></a>
+    <span>Last updated <span id="updated-date"></span></span>
+  </footer>
+</div>
+
+<div id="toast" role="status"></div>
+
+<script>
+  const STORAGE_KEY = 'documents';
+  const DOCS_ROOT = './docs';
+  const ADMIN_CHECK_URL = '/api/check-admin';
+
+  const defaultDocs = [
+    {
+      id: 'default-1',
+      title: 'National ICT Policy',
+      description: 'National ICT policy document.',
+      category: 'Policy',
+      sourceType: 'link',
+      fileUrl: 'docs/document1.pdf',
+      size: '1.1 MB',
+      updated: 'Aug 2026'
+    },
+    {
+      id: 'default-2',
+      title: 'National Child Online Protection Policy',
+      description: 'Child online protection policy (2026-2030).',
+      category: 'Policy',
+      sourceType: 'link',
+      fileUrl: 'docs/document2.pdf',
+      size: '2.3 MB',
+      updated: 'Aug 2026'
+    },
+    {
+      id: 'default-3',
+      title: 'Document 3',
+      description: 'Placeholder document 3.',
+      category: 'Guide',
+      sourceType: 'link',
+      fileUrl: 'docs/document3.pdf',
+      size: '600 KB',
+      updated: 'Jul 2026'
+    },
+    {
+      id: 'default-4',
+      title: 'Document 4',
+      description: 'Placeholder document 4.',
+      category: 'Form',
+      sourceType: 'link',
+      fileUrl: 'docs/document4.pdf',
+      size: '420 KB',
+      updated: 'Jul 2026'
+    },
+    {
+      id: 'default-5',
+      title: 'Document 5',
+      description: 'Placeholder document 5.',
+      category: 'Guide',
+      sourceType: 'link',
+      fileUrl: 'docs/document5.pdf',
+      size: '880 KB',
+      updated: 'Jun 2026'
+    }
+  ];
+
+  const tabColors = {
+    Guide: 'var(--stamp-navy)',
+    Policy: 'var(--stamp-red)',
+    Form: 'var(--stamp-green)'
+  };
+
+  function colorFor(category) {
+    if (tabColors[category]) return tabColors[category];
+    const palette = ['var(--stamp-navy)', 'var(--stamp-red)', 'var(--stamp-green)'];
+    let hash = 0;
+    for (const ch of category) hash = (hash + ch.charCodeAt(0)) % palette.length;
+    return palette[hash];
+  }
+
+  function escapeHtml(str) {
+    return String(str).replace(/[&<>\"']/g, c => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[c]));
+  }
+
+  function todayLabel() {
+    return new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+  }
+
+  function humanSize(bytes) {
+    if (!bytes && bytes !== 0) return '';
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(0) + ' KB';
+    return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+  }
+
+  function normalizeDocUrl(value) {
+    const trimmed = (value || '').trim();
+    if (!trimmed) return '';
+    if (/^https?:\/\//i.test(trimmed) || /^mailto:/i.test(trimmed)) return trimmed;
+    if (trimmed.startsWith('./') || trimmed.startsWith('/')) return trimmed;
+    return `${DOCS_ROOT}/${trimmed.replace(/^\/+/, '')}`;
+  }
+
+  let toastTimer;
+  function showToast(msg) {
+    const toastEl = document.getElementById('toast');
+    toastEl.textContent = msg;
+    toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toastEl.classList.remove('show'), 3400);
+  }
+
+  async function loadDocuments() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return [...defaultDocs];
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length) return parsed;
+      return [...defaultDocs];
+    } catch (e) {
+      return [...defaultDocs];
+    }
+  }
+
+  async function saveDocuments(docs) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(docs));
+  }
+
+  let allDocs = [];
+  let activeCategory = 'All';
+  let query = '';
+
+  function svgArrow() {
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>';
+  }
+
+  function renderPublicList() {
+    const listEl = document.getElementById('list');
+    const filtered = allDocs.filter(doc => {
+      const matchesCategory = activeCategory === 'All' || doc.category === activeCategory;
+      const q = query.trim().toLowerCase();
+      const matchesQuery = !q || doc.title.toLowerCase().includes(q) || doc.description.toLowerCase().includes(q);
+      return matchesCategory && matchesQuery;
+    });
+
+    if (allDocs.length === 0) {
+      listEl.innerHTML = '<div class="empty">No documents have been added yet.</div>';
+      return;
+    }
+
+    if (filtered.length === 0) {
+      listEl.innerHTML = '<div class="empty">No documents match "' + escapeHtml(query) + '". Try a different search or clear the filter.</div>';
+      return;
+    }
+
+    listEl.innerHTML = filtered.map(doc => `
+      <article class="card" style="--tab-color:${colorFor(doc.category)}">
+        <div class="card-top">
+          <span class="tag">${escapeHtml(doc.category)}</span>
+          <span class="filetype">PDF</span>
+        </div>
+        <h3>${escapeHtml(doc.title)}</h3>
+        <p>${escapeHtml(doc.description)}</p>
+        <div class="meta">${escapeHtml(doc.size || '')} · Updated ${escapeHtml(doc.updated)}</div>
+        <a class="open-btn" href="#" data-id="${doc.id}">
+          Open document ${svgArrow()}
+        </a>
+      </article>
+    `).join('');
+  }
+
+  function renderChips() {
+    const chipsEl = document.getElementById('chips');
+    const categories = ['All', ...new Set(allDocs.map(d => d.category))];
+    chipsEl.innerHTML = categories.map(cat =>
+      `<button class="chip${cat === activeCategory ? ' active' : ''}" data-cat="${escapeHtml(cat)}">${escapeHtml(cat)}</button>`
+    ).join('');
+
+    chipsEl.querySelectorAll('.chip').forEach(btn => {
+      btn.addEventListener('click', () => {
+        activeCategory = btn.dataset.cat;
+        renderChips();
+        renderPublicList();
+      });
+    });
+  }
+
+  document.getElementById('search').addEventListener('input', e => {
+    query = e.target.value;
+    renderPublicList();
+  });
+
+  document.getElementById('list').addEventListener('click', e => {
+    const link = e.target.closest('.open-btn');
+    if (!link) return;
+    e.preventDefault();
+
+    const doc = allDocs.find(d => d.id === link.dataset.id);
+    if (!doc) return;
+
+    if (doc.sourceType === 'link' && doc.fileUrl) {
+      window.open(doc.fileUrl, '_blank', 'noopener');
+      return;
+    }
+
+    if (doc.fileUrl) {
+      window.open(doc.fileUrl, '_blank', 'noopener');
+      return;
+    }
+
+    showToast('No file attached yet. Use admin mode to add one.');
+  });
+
+  function resetForm() {
+    editingId = null;
+    document.getElementById('form-title').textContent = 'Add a document';
+    document.getElementById('f-title').value = '';
+    document.getElementById('f-desc').value = '';
+    document.getElementById('f-cat').value = '';
+    document.getElementById('f-url').value = '';
+    document.getElementById('file-picked').textContent = '';
+    pickedFile = null;
+    fileInput.value = '';
+    setSourceType('link');
+    document.getElementById('cancel-edit').style.display = 'none';
+    document.getElementById('f-url').value = '';
+  }
+
+  function updateCategoryOptions() {
+    const datalist = document.getElementById('cat-options');
+    const cats = [...new Set(allDocs.map(d => d.category))];
+    datalist.innerHTML = cats.map(c => `<option value="${escapeHtml(c)}"></option>`).join('');
+  }
+
+  function setSourceType(type) {
+    sourceType = type;
+    document.getElementById('src-upload').classList.toggle('active', type === 'upload');
+    document.getElementById('src-link').classList.toggle('active', type === 'link');
+    document.getElementById('upload-field').style.display = type === 'upload' ? '' : 'none';
+    document.getElementById('link-field').style.display = type === 'link' ? '' : 'none';
+  }
+
+  function renderAdminList() {
+    const body = document.getElementById('admin-list-body');
+    if (allDocs.length === 0) {
+      body.innerHTML = '<div class="empty">No documents yet. Add your first one above.</div>';
+      return;
+    }
+
+    body.innerHTML = '<div id="list-admin" style="display:grid;grid-template-columns:1fr;gap:14px;"></div>';
+    const grid = document.getElementById('list-admin');
+    grid.innerHTML = allDocs.map(doc => `
+      <article class="card" style="--tab-color:${colorFor(doc.category)}">
+        <div class="card-top">
+          <span class="tag">${escapeHtml(doc.category)}</span>
+          <span class="filetype">${doc.sourceType === 'link' ? 'LINK' : 'PDF'}</span>
+        </div>
+        <h3>${escapeHtml(doc.title)}</h3>
+        <p>${escapeHtml(doc.description)}</p>
+        <div class="meta">${escapeHtml(doc.size || '')} · Updated ${escapeHtml(doc.updated)}</div>
+        <div class="card-actions">
+          <button class="edit-btn" data-id="${doc.id}" data-action="edit">Edit</button>
+          <button class="del-btn" data-id="${doc.id}" data-action="delete">Delete</button>
+        </div>
+      </article>
+    `).join('');
+  }
+
+  const fileInput = document.getElementById('f-file');
+  const dropzone = document.getElementById('dropzone');
+  let sourceType = 'upload';
+  let pickedFile = null;
+  let editingId = null;
+
+  document.getElementById('src-upload').addEventListener('click', () => setSourceType('upload'));
+  document.getElementById('src-link').addEventListener('click', () => setSourceType('link'));
+
+  dropzone.addEventListener('click', () => fileInput.click());
+  dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.classList.add('drag'); });
+  dropzone.addEventListener('dragleave', () => dropzone.classList.remove('drag'));
+  dropzone.addEventListener('drop', e => {
+    e.preventDefault();
+    dropzone.classList.remove('drag');
+    const file = e.dataTransfer.files && e.dataTransfer.files[0];
+    if (file) handleFilePicked(file);
+  });
+
+  fileInput.addEventListener('change', () => {
+    const file = fileInput.files && fileInput.files[0];
+    if (file) handleFilePicked(file);
+  });
+
+  function handleFilePicked(file) {
+    if (file.type !== 'application/pdf') {
+      showToast('Please choose a PDF file.');
+      return;
+    }
+
+    if (file.size > 3.5 * 1024 * 1024) {
+      showToast('Large files should be hosted publicly and linked instead of uploaded in-browser.');
+      return;
+    }
+
+    pickedFile = file;
+    document.getElementById('file-picked').textContent = `${file.name} · ${humanSize(file.size)}`;
+  }
+
+  function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(String(reader.result).split(',')[1]);
+      reader.onerror = () => reject(new Error('Could not read file'));
+      reader.readAsDataURL(file);
+    });
+  }
+
+  document.getElementById('cancel-edit').addEventListener('click', resetForm);
+
+  document.getElementById('save-doc').addEventListener('click', async () => {
+    const title = document.getElementById('f-title').value.trim();
+    const description = document.getElementById('f-desc').value.trim();
+    const category = document.getElementById('f-cat').value.trim() || 'General';
+    const url = normalizeDocUrl(document.getElementById('f-url').value);
+    const saveBtn = document.getElementById('save-doc');
+
+    if (!title) { showToast('Give the document a title.'); return; }
+    if (sourceType === 'link' && !url) { showToast('Paste a PDF URL or repo path.'); return; }
+    if (sourceType === 'upload' && !editingId && !pickedFile) { showToast('Choose a PDF to upload.'); return; }
+    saveBtn.disabled = true;
+    saveBtn.innerHTML = '<span class="spin"></span>Saving…';
+
+    try {
+      const id = editingId || ('doc-' + Date.now() + '-' + Math.random().toString(36).slice(2, 7));
+      let size = '';
+      let fileUrl = '';
+
+      if (sourceType === 'upload') {
+        if (pickedFile) {
+          const base64 = await fileToBase64(pickedFile);
+          fileUrl = 'data:application/pdf;base64,' + base64;
+          size = humanSize(pickedFile.size);
+        } else {
+          const existing = allDocs.find(d => d.id === editingId);
+          fileUrl = existing ? existing.fileUrl : '';
+          size = existing ? existing.size : '';
+        }
+      } else {
+        fileUrl = url;
+        size = 'Hosted link';
+      }
+
+      const newEntry = {
+        id,
+        title,
+        description,
+        category,
+        sourceType,
+        fileUrl,
+        size,
+        updated: todayLabel()
+      };
+
+      if (editingId) {
+        allDocs = allDocs.map(d => d.id === editingId ? newEntry : d);
+      } else {
+        allDocs.push(newEntry);
+      }
+
+      await saveDocuments(allDocs);
+      showToast(editingId ? 'Document updated.' : 'Document added.');
+      resetForm();
+      renderAdminList();
+      updateCategoryOptions();
+      renderPublicList();
+      renderChips();
+    } catch (err) {
+      showToast('Something went wrong saving this document.');
+    } finally {
+      saveBtn.disabled = false;
+      saveBtn.textContent = 'Save document';
+    }
+  });
+
+  document.getElementById('admin-list-body').addEventListener('click', async e => {
+    const btn = e.target.closest('button[data-action]');
+    if (!btn) return;
+
+    const doc = allDocs.find(d => d.id === btn.dataset.id);
+    if (!doc) return;
+
+    if (btn.dataset.action === 'edit') {
+      editingId = doc.id;
+      document.getElementById('form-title').textContent = 'Edit document';
+      document.getElementById('f-title').value = doc.title;
+      document.getElementById('f-desc').value = doc.description;
+      document.getElementById('f-cat').value = doc.category;
+      setSourceType(doc.sourceType || 'upload');
+      if (doc.sourceType === 'link') {
+        document.getElementById('f-url').value = doc.fileUrl || '';
+      } else {
+        document.getElementById('file-picked').textContent = 'Current file kept unless you choose a new one.';
+      }
+      document.getElementById('cancel-edit').style.display = '';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    if (btn.dataset.action === 'delete') {
+      if (!confirm(`Delete "${doc.title}"?`)) return;
+      allDocs = allDocs.filter(d => d.id !== doc.id);
+      await saveDocuments(allDocs);
+      showToast('Document deleted.');
+      renderAdminList();
+      updateCategoryOptions();
+      renderPublicList();
+      renderChips();
+    }
+  });
+
+  async function tryUnlock() {
+    const pass = document.getElementById('passcode').value.trim();
+    if (!pass) {
+      document.getElementById('gate-error').textContent = 'Enter the passcode.';
+      return;
+    }
+
+    try {
+      const response = await fetch(ADMIN_CHECK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ passcode: pass })
+      });
+
+      if (!response.ok) {
+        document.getElementById('gate-error').textContent = 'Incorrect passcode.';
+        return;
+      }
+
+      document.getElementById('admin-gate').style.display = 'none';
+      document.getElementById('admin-panel').style.display = 'flex';
+      document.getElementById('public-view').style.display = 'none';
+      document.getElementById('eyebrow').textContent = 'Document Manifest — Admin';
+      document.getElementById('heading').textContent = 'Manage what people can open.';
+      document.getElementById('subhead').textContent = 'Add, edit, or remove PDFs. Changes appear on the public manifest immediately.';
+      document.getElementById('stamp-label').textContent = 'CLEARANCE';
+      document.getElementById('stamp').style.setProperty('--stamp-red', '#22405c');
+      renderAdminList();
+      updateCategoryOptions();
+    } catch (error) {
+      document.getElementById('gate-error').textContent = 'Admin check failed. Please try again.';
+    }
+  }
+
+  function enterPublicMode() {
+    document.getElementById('admin-gate').style.display = 'none';
+    document.getElementById('admin-panel').style.display = 'none';
+    document.getElementById('public-view').style.display = '';
+    document.getElementById('eyebrow').textContent = 'Document Manifest';
+    document.getElementById('heading').textContent = 'Everything you need, in one clear source.';
+    document.getElementById('subhead').textContent = 'Select any file below to open it. This page updates whenever the manifest changes — no need to rescan.';
+    document.getElementById('stamp-label').textContent = 'ACCESSED';
+    document.getElementById('stamp').style.setProperty('--stamp-red', '#8b2a22');
+    renderPublicList();
+    renderChips();
+  }
+
+  document.getElementById('gate-submit').addEventListener('click', tryUnlock);
+  document.getElementById('passcode').addEventListener('keydown', e => { if (e.key === 'Enter') tryUnlock(); });
+
+  document.getElementById('manifest-id').addEventListener('click', e => {
+    e.preventDefault();
+    const inAdmin = document.getElementById('admin-panel').style.display !== 'none';
+    if (inAdmin) {
+      enterPublicMode();
+      return;
+    }
+
+    document.getElementById('admin-gate').style.display = 'flex';
+    document.getElementById('public-view').style.display = 'none';
+    document.getElementById('eyebrow').textContent = 'Document Manifest — Admin';
+  });
+
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }).toUpperCase();
+  document.getElementById('stamp-date').textContent = dateStr;
+  document.getElementById('updated-date').textContent = dateStr;
+  document.getElementById('manifest-id').textContent = 'MNF-' + now.getFullYear() + String(now.getMonth() + 1).padStart(2, '0') + String(now.getDate()).padStart(2, '0');
+
+  if (new URLSearchParams(window.location.search).get('admin') === '1') {
+    document.getElementById('public-view').style.display = 'none';
+    document.getElementById('admin-gate').style.display = 'flex';
+    document.getElementById('eyebrow').textContent = 'Document Manifest — Admin';
+  }
+
+  async function init() {
+    allDocs = await loadDocuments();
+    setSourceType('link');
+    renderChips();
+    renderPublicList();
+    renderAdminList();
+    updateCategoryOptions();
+  }
+
+  init();
+</script>
+
+</body>
+</html>

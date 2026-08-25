@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Document Manifest
 
 This project is a static document portal designed for GitHub Pages or any other static host.
@@ -27,3 +28,6 @@ The admin passcode must be configured as an environment variable, not embedded i
 3. On Vercel or another host, add that value in the project environment settings.
 
 > For large PDFs, prefer a public hosted link instead of in-browser upload.
+=======
+# doc-host
+>>>>>>> origin/main

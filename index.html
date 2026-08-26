@@ -652,6 +652,16 @@
     },
     {
       id: 'default-2',
+      title: 'National Child Online Protection Policy',
+      description: 'Child online protection and digital safety policy guidance for public awareness and implementation.',
+      category: 'Policy',
+      sourceType: 'link',
+      fileUrl: './docs/eZuG2i_4e6b3f1ccadb8f4c.pdf',
+      size: '13.0 MB',
+      updated: 'Aug 2026'
+    },
+    {
+      id: 'default-3',
       title: 'Zimbabwe National AI Strategy',
       description: 'High-resolution national AI strategy document and implementation reference.',
       category: 'Policy',
@@ -893,13 +903,23 @@
   });
 
   function handleFilePicked(file) {
-    if (file.type !== 'application/pdf') {
+    const isPdfFile =
+      file && (
+        file.type === 'application/pdf' ||
+        file.type === 'application/octet-stream' ||
+        file.type === 'application/x-pdf' ||
+        file.type === 'application/vnd.pdf' ||
+        /\.pdf$/i.test(file.name || '') ||
+        file.type === ''
+      );
+
+    if (!isPdfFile) {
       showToast('Please choose a PDF file.');
       return;
     }
 
     if (file.size > 3.5 * 1024 * 1024) {
-      showToast('Large files should be hosted publicly and linked instead of uploaded in-browser.');
+      showToast('This static demo only accepts small PDF uploads. Large files should be hosted publicly and linked instead.');
       return;
     }
 

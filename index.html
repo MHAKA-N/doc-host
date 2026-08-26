@@ -736,10 +736,11 @@
 
   function renderPublicList() {
     const listEl = document.getElementById('list');
+    const q = (query || '').trim().toLowerCase();
     const filtered = allDocs.filter(doc => {
       const matchesCategory = activeCategory === 'All' || doc.category === activeCategory;
-      const q = query.trim().toLowerCase();
-      const matchesQuery = !q || doc.title.toLowerCase().includes(q) || doc.description.toLowerCase().includes(q);
+      const haystack = [doc.title, doc.description, doc.category].join(' ').toLowerCase();
+      const matchesQuery = !q || haystack.includes(q);
       return matchesCategory && matchesQuery;
     });
 
@@ -753,20 +754,23 @@
       return;
     }
 
-    listEl.innerHTML = filtered.map(doc => `
-      <article class="card" style="--tab-color:${colorFor(doc.category)}">
-        <div class="card-top">
-          <span class="tag">${escapeHtml(doc.category)}</span>
-          <span class="filetype">PDF</span>
-        </div>
-        <h3>${escapeHtml(doc.title)}</h3>
-        <p>${escapeHtml(doc.description)}</p>
-        <div class="meta">${escapeHtml(doc.size || '')} · Updated ${escapeHtml(doc.updated)}</div>
-        <a class="open-btn" href="#" data-id="${doc.id}">
-          Open document ${svgArrow()}
-        </a>
-      </article>
-    `).join('');
+    listEl.innerHTML = filtered.map(doc => {
+      const href = normalizeDocUrl(doc.fileUrl || '');
+      return `
+        <article class="card" style="--tab-color:${colorFor(doc.category)}">
+          <div class="card-top">
+            <span class="tag">${escapeHtml(doc.category)}</span>
+            <span class="filetype">PDF</span>
+          </div>
+          <h3>${escapeHtml(doc.title)}</h3>
+          <p>${escapeHtml(doc.description)}</p>
+          <div class="meta">${escapeHtml(doc.size || '')} · Updated ${escapeHtml(doc.updated)}</div>
+          <a class="open-btn" href="${escapeHtml(href)}" target="_blank" rel="noopener noreferrer" data-id="${doc.id}">
+            Open document ${svgArrow()}
+          </a>
+        </article>
+      `;
+    }).join('');
   }
 
   function renderChips() {
@@ -786,29 +790,27 @@
   }
 
   document.getElementById('search').addEventListener('input', e => {
-    query = e.target.value;
+    query = (e.target.value || '').trim();
     renderPublicList();
   });
 
   document.getElementById('list').addEventListener('click', e => {
     const link = e.target.closest('.open-btn');
     if (!link) return;
-    e.preventDefault();
 
     const doc = allDocs.find(d => d.id === link.dataset.id);
     if (!doc) return;
 
-    if (doc.sourceType === 'link' && doc.fileUrl) {
-      window.open(doc.fileUrl, '_blank', 'noopener');
+    const resolvedUrl = normalizeDocUrl(doc.fileUrl || '');
+    if (!resolvedUrl) {
+      e.preventDefault();
+      showToast('No file attached yet. Use admin mode to add one.');
       return;
     }
 
-    if (doc.fileUrl) {
-      window.open(doc.fileUrl, '_blank', 'noopener');
-      return;
-    }
-
-    showToast('No file attached yet. Use admin mode to add one.');
+    link.href = resolvedUrl;
+    link.setAttribute('target', '_blank');
+    link.setAttribute('rel', 'noopener noreferrer');
   });
 
   function resetForm() {

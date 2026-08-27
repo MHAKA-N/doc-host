@@ -44,6 +44,21 @@ module.exports = async (req, res) => {
 
   if (req.method === 'GET') {
     try {
+      // Try raw.githubusercontent first (public raw file) — simpler and avoids API auth
+      const rawUrl = `https://raw.githubusercontent.com/${repo}/main/${path}`;
+      try {
+        const rawResp = await ghFetch(rawUrl, { headers: { Accept: 'application/json' } });
+        if (rawResp.ok) {
+          const text = await rawResp.text();
+          res.setHeader('Content-Type', 'application/json');
+          res.statusCode = 200;
+          res.end(text);
+          return;
+        }
+      } catch (e) {
+        // fall through to API approach
+      }
+
       const apiUrl = `https://api.github.com/repos/${repo}/contents/${path}`;
       const headers = { Accept: 'application/vnd.github.v3.raw' };
       if (token) headers.Authorization = `token ${token}`;

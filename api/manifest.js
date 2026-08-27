@@ -74,8 +74,9 @@ module.exports = async (req, res) => {
       res.statusCode = 200;
       res.end(text);
     } catch (err) {
+      console.error('manifest GET error', err && err.stack || err);
       res.statusCode = 500; res.setHeader('Content-Type', 'application/json');
-      res.end(JSON.stringify({ error: String(err) }));
+      res.end(JSON.stringify({ error: String(err), stack: err && err.stack }));
     }
     return;
   }
@@ -114,8 +115,9 @@ module.exports = async (req, res) => {
       res.statusCode = 200; res.setHeader('Content-Type', 'application/json');
       res.end(JSON.stringify({ ok: true, commit: putJson.commit }));
     } catch (err) {
+      console.error('manifest POST error', err && err.stack || err);
       res.statusCode = 500; res.setHeader('Content-Type', 'application/json');
-      res.end(JSON.stringify({ error: String(err) }));
+      res.end(JSON.stringify({ error: String(err), stack: err && err.stack }));
     }
     return;
   }

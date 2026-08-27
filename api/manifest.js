@@ -45,7 +45,9 @@ module.exports = async (req, res) => {
   if (req.method === 'GET') {
     try {
       const apiUrl = `https://api.github.com/repos/${repo}/contents/${path}`;
-      const resp = await ghFetch(apiUrl, { headers: { Authorization: token ? `token ${token}` : '', Accept: 'application/vnd.github.v3.raw' } });
+      const headers = { Accept: 'application/vnd.github.v3.raw' };
+      if (token) headers.Authorization = `token ${token}`;
+      const resp = await ghFetch(apiUrl, { headers });
       if (!resp.ok) {
         // file missing or inaccessible — return empty array so client falls back
         res.setHeader('Content-Type', 'application/json');

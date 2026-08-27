@@ -638,6 +638,7 @@
   const STORAGE_KEY = 'documents';
   const DOCS_ROOT = './docs';
   const ADMIN_CHECK_URL = '/api/check-admin';
+  const REMOTE_MANIFEST_RAW = 'https://raw.githubusercontent.com/MHAKA-N/doc-host/main/manifest.json';
 
   const defaultDocs = [
     {
@@ -722,7 +723,17 @@
 
   async function loadDocuments() {
     try {
-      // Try remote manifest first (server-synced)
+      // Try raw GitHub manifest first (public raw URL) so mobile devices see updates immediately
+      try {
+        const r = await fetch(REMOTE_MANIFEST_RAW);
+        if (r.ok) {
+          const remote = await r.json();
+          if (Array.isArray(remote) && remote.length) return remote;
+        }
+      } catch (err) {
+        // ignore and fall back to serverless / localStorage
+      }
+      // Try serverless manifest next
       try {
         const resp = await fetch('/api/manifest');
         if (resp.ok) {

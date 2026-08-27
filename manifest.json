@@ -1,32 +1,5 @@
 [
   {
-    "id": "default-1",
-    "title": "National ICT Policy 2022-2027",
-    "description": "National ICT policy document for the current planning and implementation cycle.",
-    "category": "Policy",
-    "sourceType": "link",
-    "fileUrl": "./docs/national-ict-policy-2022-2027.pdf",
-    "size": "10.5 MB",
-    "updated": "Aug 2026"
-  },
-  {
-    "id": "default-2",
-    "title": "National Child Online Protection Policy",
-    "description": "Child online protection and digital safety policy guidance for public awareness and implementation.",
-    "category": "Policy",
-    "sourceType": "link",
-    "fileUrl": "./docs/eZuG2i_4e6b3f1ccadb8f4c.pdf",
-    "size": "13.0 MB",
-    "updated": "Aug 2026"
-  },
-  {
-    "id": "default-3",
-    "title": "Zimbabwe National AI Strategy",
-    "description": "High-resolution national AI strategy document and implementation reference.",
-    "category": "Policy",
-    "sourceType": "link",
-    "fileUrl": "./docs/zimbabwe-national-ai-strategy.pdf",
-    "size": "79.7 MB",
-    "updated": "Aug 2026"
+    "title": "test-from-curl"
   }
 ]

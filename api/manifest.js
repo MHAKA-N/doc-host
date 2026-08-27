@@ -13,6 +13,7 @@ function readRequestBody(req) {
 }
 
 module.exports = async (req, res) => {
+  console.log('manifest function invoked', { method: req.method });
   const repo = process.env.GITHUB_REPO;
   const token = process.env.GITHUB_TOKEN;
   const path = 'manifest.json';
@@ -107,7 +108,17 @@ module.exports = async (req, res) => {
 
     try {
       const bodyRaw = await readRequestBody(req);
-      const body = bodyRaw ? JSON.parse(bodyRaw) : {};
+      let body = {};
+      if (bodyRaw) {
+        try {
+          body = JSON.parse(bodyRaw);
+        } catch (e) {
+          console.error('Invalid JSON in request body', { bodyRaw });
+          res.statusCode = 400; res.setHeader('Content-Type', 'application/json');
+          res.end(JSON.stringify({ error: 'Invalid JSON in request body', detail: String(e) }));
+          return;
+        }
+      }
       const docs = body.docs || body;
       const content = Buffer.from(JSON.stringify(docs, null, 2)).toString('base64');
 
@@ -116,16 +127,23 @@ module.exports = async (req, res) => {
       const getResp = await ghFetch(url, { headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json' } });
       let sha;
       if (getResp.ok) {
-        const meta = await getResp.json();
-        sha = meta.sha;
+        try {
+          const meta = await getResp.json();
+          if (meta && meta.sha) sha = meta.sha;
+        } catch (e) {
+          console.warn('Could not parse GET metadata response', e && e.stack || e);
+        }
       }
 
       const putBody = JSON.stringify({ message: 'Update manifest.json via admin', content, sha });
       const putResp = await ghFetch(url, { method: 'PUT', headers: { Authorization: `token ${token}`, 'Content-Type': 'application/json', Accept: 'application/vnd.github.v3+json' }, body: putBody });
-      const putJson = await putResp.json();
+      const putText = await putResp.text();
+      let putJson;
+      try { putJson = JSON.parse(putText); } catch (e) { putJson = putText; }
       if (!putResp.ok) {
+        console.error('GitHub PUT failed', { status: putResp.status, body: putJson });
         res.statusCode = 500; res.setHeader('Content-Type', 'application/json');
-        res.end(JSON.stringify({ error: putJson }));
+        res.end(JSON.stringify({ error: 'GitHub PUT failed', status: putResp.status, body: putJson }));
         return;
       }
 

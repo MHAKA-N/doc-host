@@ -628,6 +628,7 @@
 
   <footer>
     <a href="#" id="manifest-id" class="manifest-id" aria-label="Open admin dashboard" title="Admin dashboard"></a>
+    <button class="btn-ghost" id="reload-manifest" title="Reload remote manifest">Reload manifest</button>
     <span>Last updated <span id="updated-date"></span></span>
   </footer>
 </div>
@@ -751,6 +752,39 @@
       return [...defaultDocs];
     } catch (e) {
       return [...defaultDocs];
+    }
+  }
+
+  async function reloadRemoteManifest(showToastOnSuccess = true) {
+    try {
+      const resp = await fetch(REMOTE_MANIFEST_RAW + '?_=' + Date.now());
+      if (!resp.ok) {
+        showToast('Remote manifest unavailable.');
+        return false;
+      }
+      const remote = await resp.json();
+      if (!Array.isArray(remote)) {
+        showToast('Remote manifest invalid.');
+        return false;
+      }
+      const current = JSON.stringify(allDocs || []);
+      const next = JSON.stringify(remote || []);
+      if (current !== next) {
+        allDocs = remote;
+        await saveDocuments(allDocs);
+        renderChips();
+        renderPublicList();
+        renderAdminList();
+        if (showToastOnSuccess) showToast('Remote manifest reloaded.');
+        return true;
+      } else {
+        if (showToastOnSuccess) showToast('Remote manifest is up to date.');
+        return false;
+      }
+    } catch (err) {
+      console.warn('Reload manifest failed', err);
+      showToast('Failed to reload remote manifest.');
+      return false;
     }
   }
 
@@ -1145,6 +1179,20 @@
     document.getElementById('public-view').style.display = 'none';
     document.getElementById('eyebrow').textContent = 'Document Manifest — Admin';
   });
+
+  document.getElementById('reload-manifest').addEventListener('click', async (e) => {
+    e.preventDefault();
+    await reloadRemoteManifest();
+  });
+
+  // Periodically poll remote manifest for changes (every 45s)
+  setInterval(async () => {
+    try {
+      await reloadRemoteManifest(false);
+    } catch (e) {
+      // ignore polling errors
+    }
+  }, 45000);
 
   const now = new Date();
   const dateStr = now.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }).toUpperCase();

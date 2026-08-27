@@ -722,6 +722,17 @@
 
   async function loadDocuments() {
     try {
+      // Try remote manifest first (server-synced)
+      try {
+        const resp = await fetch('/api/manifest');
+        if (resp.ok) {
+          const remote = await resp.json();
+          if (Array.isArray(remote) && remote.length) return remote;
+        }
+      } catch (err) {
+        // ignore remote errors and fall back to localStorage
+      }
+
       const raw = localStorage.getItem(STORAGE_KEY);
       if (!raw) return [...defaultDocs];
       const parsed = JSON.parse(raw);
@@ -733,7 +744,20 @@
   }
 
   async function saveDocuments(docs) {
+    // Save locally for offline preview
     localStorage.setItem(STORAGE_KEY, JSON.stringify(docs));
+
+    // Try to push to the remote manifest (non-blocking)
+    try {
+      await fetch('/api/manifest', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ docs })
+      });
+    } catch (err) {
+      // Remote save failed — keep local copy and continue
+      console.warn('Remote manifest save failed', err);
+    }
   }
 
   let allDocs = [];

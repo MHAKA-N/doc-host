@@ -749,14 +749,24 @@
 
     // Try to push to the remote manifest (non-blocking)
     try {
-      await fetch('/api/manifest', {
+      const resp = await fetch('/api/manifest', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ docs })
       });
+
+      if (resp && resp.ok) {
+        showToast('Saved to remote manifest.');
+      } else {
+        let info = '';
+        try { info = JSON.stringify(await resp.json()); } catch (e) { info = String(resp && resp.status); }
+        console.warn('Remote manifest save failed', info);
+        showToast('Remote save failed. Manifest will remain local.');
+      }
     } catch (err) {
       // Remote save failed — keep local copy and continue
       console.warn('Remote manifest save failed', err);
+      showToast('Remote save failed (network). Manifest saved locally.');
     }
   }
 

@@ -159,3 +159,4 @@ module.exports = async (req, res) => {
 
   res.setHeader('Allow', 'GET, POST');
   res.statusCode = 405; res.end();
+};

@@ -803,10 +803,22 @@
       if (resp && resp.ok) {
         showToast('Saved to remote manifest.');
       } else {
-        let info = '';
-        try { info = JSON.stringify(await resp.json()); } catch (e) { info = String(resp && resp.status); }
-        console.warn('Remote manifest save failed', info);
-        showToast('Remote save failed. Manifest will remain local.');
+        if (resp && resp.status === 409) {
+          try {
+            const err = await resp.json();
+            console.warn('Remote manifest conflict', err);
+            showToast('Remote manifest changed — reloading.');
+            await reloadRemoteManifest(true);
+          } catch (e) {
+            showToast('Remote save conflict. Reloading manifest.');
+            await reloadRemoteManifest(true);
+          }
+        } else {
+          let info = '';
+          try { info = JSON.stringify(await resp.json()); } catch (e) { info = String(resp && resp.status); }
+          console.warn('Remote manifest save failed', info);
+          showToast('Remote save failed. Manifest will remain local.');
+        }
       }
     } catch (err) {
       // Remote save failed — keep local copy and continue

@@ -126,13 +126,39 @@ module.exports = async (req, res) => {
       // Try to get existing file to obtain SHA
       const getResp = await ghFetch(url, { headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json' } });
       let sha;
+      let existingDocs = null;
       if (getResp.ok) {
         try {
           const meta = await getResp.json();
           if (meta && meta.sha) sha = meta.sha;
+          if (meta && meta.content) {
+            try {
+              const decoded = Buffer.from(meta.content, 'base64').toString('utf8');
+              existingDocs = JSON.parse(decoded);
+            } catch (e) {
+              console.warn('Could not decode existing manifest content', e && e.stack || e);
+            }
+          }
         } catch (e) {
           console.warn('Could not parse GET metadata response', e && e.stack || e);
         }
+      }
+
+      // Simple safety: if the incoming save *removes* entries that exist remotely, treat as a conflict
+      try {
+        if (Array.isArray(existingDocs) && Array.isArray(docs)) {
+          const existingIds = new Set(existingDocs.map(d => d.id));
+          const incomingIds = new Set(docs.map(d => d.id));
+          const removed = [...existingIds].filter(id => !incomingIds.has(id));
+          if (removed.length > 0) {
+            res.statusCode = 409; res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify({ error: 'Conflict: remote manifest contains entries missing from your upload', removed }));
+            return;
+          }
+        }
+      } catch (e) {
+        // if safety check fails, continue to attempt the PUT — better than blocking all saves
+        console.warn('Manifest merge-safety check failed', e && e.stack || e);
       }
 
       const putBody = JSON.stringify({ message: 'Update manifest.json via admin', content, sha });

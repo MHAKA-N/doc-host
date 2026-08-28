@@ -39,4 +39,15 @@
     "size": "Hosted link",
     "updated": "Aug 2026"
   }
+  ,
+  {
+    "id": "doc-broadband-20260828",
+    "title": "Zimbabwe National Broadband Plan",
+    "description": "National broadband plan and implementation framework.",
+    "category": "Policy",
+    "sourceType": "link",
+    "fileUrl": "./docs/Zimbabwe%20National%20Broadband%20Plan.pdf",
+    "size": "1.4 MB",
+    "updated": "Aug 2026"
+  }
 ]
